@@ -44,4 +44,3 @@ When reporting smoke-test results, include:
 - whether they passed or failed
 - generated artifact paths
 - any parser warnings or unexpected behavior
-
