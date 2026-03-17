@@ -17,18 +17,13 @@ data/normalized/list/*
 !data/normalized/list/.gitkeep
 data/normalized/datasets/*
 !data/normalized/datasets/.gitkeep
-!data/normalized/datasets/86.json
-!data/normalized/datasets/88.json
 data/normalized/scans/*
 !data/normalized/scans/.gitkeep
 data/normalized/catalog.json
-!data/normalized/catalog.json
 
 data/generated/datasets/*
 !data/generated/datasets/.gitkeep
-!data/generated/datasets/86-감성대화.md
-!data/generated/datasets/88-공공행정문서-ocr.md
+!data/generated/datasets/*.md
 data/generated/index/*
 !data/generated/index/.gitkeep
-!data/generated/index/dataset-catalog.md
-
+!data/generated/index/*.md

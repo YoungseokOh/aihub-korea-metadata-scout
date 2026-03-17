@@ -109,7 +109,7 @@ uv run aihub-korea-scout build-index
 
 ## Temporary Output Directory Pattern
 
-For smoke tests or experiments, avoid mixing transient artifacts into the committed sample outputs.
+For smoke tests or experiments, avoid mixing transient artifacts into the committed generated Markdown outputs.
 
 ```bash
 env AIHUB_OUTPUT_DIR=/tmp/aihub-smoke/data \

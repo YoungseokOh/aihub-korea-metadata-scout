@@ -302,17 +302,19 @@ uv run ruff check .
 uv run pytest
 ```
 
-## 샘플 산출물
+## 버전 관리 정책
 
-테스트 fixture 기반의 결정론적 샘플 산출물이 저장소에 포함되어 있습니다.
+저장소는 사람이 읽는 결과물 중심으로 Git에 올립니다.
 
-- `data/normalized/datasets/86.json`
-- `data/normalized/datasets/88.json`
-- `data/generated/datasets/86-감성대화.md`
-- `data/generated/datasets/88-공공행정문서-ocr.md`
-- `data/generated/index/dataset-catalog.md`
+- `data/generated/datasets/*.md`
+- `data/generated/index/*.md`
 
-이 파일들은 라이브 스캔 결과가 아니라 고정 fixture 기반으로 생성된 예시입니다.
+반면 아래 경로는 로컬 전용 아티팩트입니다.
+
+- `data/raw/**`
+- `data/normalized/**`
+
+즉, `generated`는 버전 관리 대상이고, `raw`와 `normalized`는 재생성 가능한 로컬 캐시/중간 산출물로 취급합니다.
 
 ## 구조 요약
 

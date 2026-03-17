@@ -25,7 +25,7 @@ uv run pytest
 - keep the project metadata-only
 - do not add download commands or placeholders
 - keep `aihubshell` as the source of truth
-- preserve committed fixture-derived sample outputs unless intentionally regenerating them
+- preserve committed generated Markdown outputs unless intentionally regenerating them
 - prefer typed, explicit, maintainable code
 
 ## When Changing Parsers
@@ -61,5 +61,4 @@ The repository uses two levels of verification.
 - live `inspect` or `summarize`
 - live `scan` against a small limit
 
-Smoke tests should use `/tmp` output paths to avoid changing committed sample artifacts.
-
+Smoke tests should use `/tmp` output paths to avoid changing committed generated Markdown artifacts.

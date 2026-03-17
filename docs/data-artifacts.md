@@ -56,7 +56,15 @@ Typical files:
 
 ## Committed vs Temporary Artifacts
 
-The repository commits only deterministic sample artifacts derived from test fixtures.
+The repository commits human-readable generated Markdown artifacts.
+
+- `data/generated/datasets/*.md`
+- `data/generated/index/*.md`
+
+The repository does not commit local cache and normalized machine-readable layers by default.
+
+- `data/raw/**`
+- `data/normalized/**`
 
 Use a temporary output root for:
 
@@ -71,4 +79,3 @@ env AIHUB_OUTPUT_DIR=/tmp/aihub-smoke/data \
     AIHUB_CACHE_DIR=/tmp/aihub-smoke/data/raw \
     uv run aihub-korea-scout scan --limit 5
 ```
-

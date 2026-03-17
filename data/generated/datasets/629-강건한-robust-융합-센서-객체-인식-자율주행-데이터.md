@@ -1,0 +1,118 @@
+# 강건한(Robust) 융합 센서 객체 인식 자율주행 데이터
+
+## Basic Info
+- Dataset Key: `629`
+- Source Command: `/root/.local/bin/aihubshell -mode l -datasetkey 629`
+- Collected At: `2026-03-17T08:40:54.562598+00:00`
+- Parse Status: `success`
+- Inferred tags:
+  - `computer-vision`
+  - `3d/lidar`
+  - `3d`
+  - `객체`
+  - `robust`
+  - `강건한`
+  - `센서`
+  - `융합`
+  - `인식`
+  - `자율주행`
+  - `2d`
+  - `bb`
+  - `seg`
+  - `tl1`
+  - `tl10`
+  - `tl11`
+
+## File Overview
+- File count: `38`
+- Total known size: `545.7 GB`
+- Representative file paths:
+  - `084.강건한(Robust) 융합 센서 객체 인식 자율주행 데이터/01.데이터/1.Training/라벨링데이터/TL7_3D BB_주간_맑음_3. 골목_2.zip`
+  - `084.강건한(Robust) 융합 센서 객체 인식 자율주행 데이터/01.데이터/1.Training/라벨링데이터/TL8_3D BB_주간_맑음_4. 시골길.zip`
+  - `084.강건한(Robust) 융합 센서 객체 인식 자율주행 데이터/01.데이터/1.Training/라벨링데이터/TL9_3D BB_주간_맑음_5. 산길.zip`
+  - `084.강건한(Robust) 융합 센서 객체 인식 자율주행 데이터/01.데이터/1.Training/라벨링데이터/TL14_3D BB_야간.zip`
+  - `084.강건한(Robust) 융합 센서 객체 인식 자율주행 데이터/01.데이터/1.Training/라벨링데이터/TL15_연속데이터.zip`
+- Notices / warnings:
+  - 공지사항은 보이지 않았습니다.
+
+## What This Dataset Appears To Be
+제목과 파일 트리를 기준으로 보면 이 데이터셋은 `computer-vision` 성격의 `3d/lidar` 자료로 보입니다. 확인 가능한 파일은 38개이며 알려진 총 용량은 545.7 GB입니다. training/validation 분리가 보여서 기본 실험 파이프라인을 구성하기는 쉬워 보입니다. 세부 의미 해석은 하지 않았고, 이 설명은 제목과 파일 트리만으로 추론했습니다 (inferred from title and file tree only).
+
+## Potential Use Cases
+- 내부 데이터 파이프라인 실험
+- 도메인 특화 검색/분류 모델 평가
+- 수직형 AI 제품의 초기 검증셋
+
+## Business Model Exploration
+- likely customer types:
+  - 수직형 AI 제품팀
+  - 데이터 중심 스타트업
+  - 내부 분석 플랫폼 팀
+- possible product ideas:
+  - 내부 데이터 파이프라인 실험
+  - 도메인 특화 검색/분류 모델 평가
+  - 수직형 AI 제품의 초기 검증셋
+- monetization paths:
+  - 월 구독
+  - 사용량 과금 API
+  - 전문 서비스 결합 판매
+- why it could be interesting commercially:
+  - 좁은 문제를 빠르게 실험하는 데는 의미가 있을 수 있습니다.
+  - 구조가 드러난 파일 트리는 초기 타당성 검토 속도를 높여 줍니다.
+- why it might fail commercially:
+  - 실제 내용 품질이 기대보다 낮으면 사업화 가정이 쉽게 무너질 수 있습니다.
+  - 메타데이터 기반 해석이라 현업 니즈와 어긋날 가능성을 열어 둬야 합니다.
+
+## Practicality Assessment
+- training/validation 분리가 보여서 기본 실험 파이프라인을 구성하기는 쉬워 보입니다.
+- 라벨링 데이터와 원천 데이터가 모두 보여서 지도학습 준비도가 상대적으로 높아 보입니다.
+- 압축 파일 조각이 많아 보여 파일 정리와 전처리 부담이 커질 수 있습니다.
+- 표시된 총 용량이 매우 커서 저장소와 처리 비용이 빠르게 증가할 가능성이 큽니다.
+- 실사용 전까지 저장소/배치 처리 설계를 먼저 잡는 편이 안전해 보입니다.
+- 법률·정책 적합성은 별도 확인이 필요합니다.
+- legal/policy caution placeholder: License and policy suitability must be validated separately.
+
+## Scores
+- Opportunity score: `3` / 10
+- Build difficulty: `10` / 10
+- Data readiness: `5` / 10
+- Score reasons:
+  - 영상/3D 계열은 저장·전처리·서빙 부담이 큰 편입니다.
+  - 표시된 용량이 매우 커서 초기 실험 비용이 큽니다.
+  - 압축 조각이 많아 전처리 파이프라인이 필요해 보입니다.
+  - 라벨링 데이터가 보여 활용 가설을 세우기 쉽습니다.
+
+## Raw Metadata Snapshot
+```json
+{
+  "dataset_key": 629,
+  "title": "강건한(Robust) 융합 센서 객체 인식 자율주행 데이터",
+  "tags": [
+    "computer-vision",
+    "3d/lidar",
+    "3d",
+    "객체",
+    "robust",
+    "강건한",
+    "센서",
+    "융합",
+    "인식",
+    "자율주행"
+  ],
+  "category_guess": "computer-vision",
+  "modality_guess": "3d/lidar",
+  "file_count": 38,
+  "total_size_bytes": 585936840704,
+  "human_size": "545.7 GB",
+  "sample_file_paths": [
+    "084.강건한(Robust) 융합 센서 객체 인식 자율주행 데이터/01.데이터/1.Training/라벨링데이터/TL7_3D BB_주간_맑음_3. 골목_2.zip",
+    "084.강건한(Robust) 융합 센서 객체 인식 자율주행 데이터/01.데이터/1.Training/라벨링데이터/TL8_3D BB_주간_맑음_4. 시골길.zip",
+    "084.강건한(Robust) 융합 센서 객체 인식 자율주행 데이터/01.데이터/1.Training/라벨링데이터/TL9_3D BB_주간_맑음_5. 산길.zip",
+    "084.강건한(Robust) 융합 센서 객체 인식 자율주행 데이터/01.데이터/1.Training/라벨링데이터/TL14_3D BB_야간.zip",
+    "084.강건한(Robust) 융합 센서 객체 인식 자율주행 데이터/01.데이터/1.Training/라벨링데이터/TL15_연속데이터.zip"
+  ],
+  "parse_status": "success",
+  "parse_warnings": [],
+  "notices": []
+}
+```

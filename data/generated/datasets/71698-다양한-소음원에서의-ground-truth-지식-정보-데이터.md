@@ -1,0 +1,117 @@
+# 다양한 소음원에서의 Ground Truth 지식 정보 데이터
+
+## Basic Info
+- Dataset Key: `71698`
+- Source Command: `/root/.local/bin/aihubshell -mode l -datasetkey 71698`
+- Collected At: `2026-03-17T08:41:32.897660+00:00`
+- Parse Status: `success`
+- Inferred tags:
+  - `speech/dialogue`
+  - `audio`
+  - `medical`
+  - `nlp/knowledge`
+  - `text`
+  - `대화`
+  - `음성`
+  - `의학`
+  - `지식`
+  - `ground`
+  - `truth`
+  - `다양한`
+  - `소음원에서의`
+  - `정보`
+  - `sb`
+  - `sublabel`
+
+## File Overview
+- File count: `337`
+- Total known size: `881.7 GB`
+- Representative file paths:
+  - `016.다양한 소음원에서의 Ground Truth 지식 정보 데이터/3.개방데이터/1.데이터/Training/01.원천데이터/TS_대화음성데이터_01.경제및산업_01.주거지역.zip`
+  - `016.다양한 소음원에서의 Ground Truth 지식 정보 데이터/3.개방데이터/1.데이터/Training/01.원천데이터/TS_대화음성데이터_01.경제및산업_02.공공시설.zip`
+  - `016.다양한 소음원에서의 Ground Truth 지식 정보 데이터/3.개방데이터/1.데이터/Training/01.원천데이터/TS_대화음성데이터_01.경제및산업_03.교통지역.zip`
+  - `016.다양한 소음원에서의 Ground Truth 지식 정보 데이터/3.개방데이터/1.데이터/Training/01.원천데이터/TS_대화음성데이터_01.경제및산업_04.산업지역.zip`
+  - `016.다양한 소음원에서의 Ground Truth 지식 정보 데이터/3.개방데이터/1.데이터/Training/01.원천데이터/TS_대화음성데이터_01.경제및산업_05.상업지역.zip`
+- Notices / warnings:
+  - 공지사항은 보이지 않았습니다.
+
+## What This Dataset Appears To Be
+제목과 파일 트리를 기준으로 보면 이 데이터셋은 `speech/dialogue` 성격의 `audio` 자료로 보입니다. 확인 가능한 파일은 337개이며 알려진 총 용량은 881.7 GB입니다. training/validation 분리가 보여서 기본 실험 파이프라인을 구성하기는 쉬워 보입니다. 세부 의미 해석은 하지 않았고, 이 설명은 제목과 파일 트리만으로 추론했습니다 (inferred from title and file tree only).
+
+## Potential Use Cases
+- 콜센터 품질 분석
+- 음성 상담 요약 및 QA 도우미
+- 도메인 특화 음성 평가 벤치마크
+
+## Business Model Exploration
+- likely customer types:
+  - 컨택센터 운영팀
+  - 음성 분석 SaaS 팀
+  - 고객지원 플랫폼 팀
+- possible product ideas:
+  - 콜센터 품질 분석
+  - 음성 상담 요약 및 QA 도우미
+  - 도메인 특화 음성 평가 벤치마크
+- monetization paths:
+  - 좌석 기반 SaaS
+  - 통화량 기반 사용량 과금
+  - 평가 리포트 패키지
+- why it could be interesting commercially:
+  - 좁은 문제를 빠르게 실험하는 데는 의미가 있을 수 있습니다.
+  - 구조가 드러난 파일 트리는 초기 타당성 검토 속도를 높여 줍니다.
+- why it might fail commercially:
+  - 실제 내용 품질이 기대보다 낮으면 사업화 가정이 쉽게 무너질 수 있습니다.
+  - 메타데이터 기반 해석이라 현업 니즈와 어긋날 가능성을 열어 둬야 합니다.
+
+## Practicality Assessment
+- training/validation 분리가 보여서 기본 실험 파이프라인을 구성하기는 쉬워 보입니다.
+- 라벨링 데이터와 원천 데이터가 모두 보여서 지도학습 준비도가 상대적으로 높아 보입니다.
+- 압축 파일 조각이 많아 보여 파일 정리와 전처리 부담이 커질 수 있습니다.
+- 표시된 총 용량이 매우 커서 저장소와 처리 비용이 빠르게 증가할 가능성이 큽니다.
+- 실사용 전까지 저장소/배치 처리 설계를 먼저 잡는 편이 안전해 보입니다.
+- 법률·정책 적합성은 별도 확인이 필요합니다.
+- legal/policy caution placeholder: License and policy suitability must be validated separately.
+
+## Scores
+- Opportunity score: `6` / 10
+- Build difficulty: `8` / 10
+- Data readiness: `4` / 10
+- Score reasons:
+  - 상업적 수요가 반복적으로 발생하는 문제 영역으로 보입니다.
+  - 표시된 용량이 매우 커서 초기 실험 비용이 큽니다.
+  - 압축 조각이 많아 전처리 파이프라인이 필요해 보입니다.
+
+## Raw Metadata Snapshot
+```json
+{
+  "dataset_key": 71698,
+  "title": "다양한 소음원에서의 Ground Truth 지식 정보 데이터",
+  "tags": [
+    "speech/dialogue",
+    "audio",
+    "medical",
+    "nlp/knowledge",
+    "text",
+    "대화",
+    "음성",
+    "의학",
+    "지식",
+    "ground"
+  ],
+  "category_guess": "speech/dialogue",
+  "modality_guess": "audio",
+  "file_count": 337,
+  "total_size_bytes": 946759038976,
+  "human_size": "881.7 GB",
+  "sample_file_paths": [
+    "016.다양한 소음원에서의 Ground Truth 지식 정보 데이터/3.개방데이터/1.데이터/Training/01.원천데이터/TS_대화음성데이터_01.경제및산업_01.주거지역.zip",
+    "016.다양한 소음원에서의 Ground Truth 지식 정보 데이터/3.개방데이터/1.데이터/Training/01.원천데이터/TS_대화음성데이터_01.경제및산업_02.공공시설.zip",
+    "016.다양한 소음원에서의 Ground Truth 지식 정보 데이터/3.개방데이터/1.데이터/Training/01.원천데이터/TS_대화음성데이터_01.경제및산업_03.교통지역.zip",
+    "016.다양한 소음원에서의 Ground Truth 지식 정보 데이터/3.개방데이터/1.데이터/Training/01.원천데이터/TS_대화음성데이터_01.경제및산업_04.산업지역.zip",
+    "016.다양한 소음원에서의 Ground Truth 지식 정보 데이터/3.개방데이터/1.데이터/Training/01.원천데이터/TS_대화음성데이터_01.경제및산업_05.상업지역.zip"
+  ],
+  "parse_status": "success",
+  "parse_warnings": [],
+  "notices": []
+}
+```
