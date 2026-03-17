@@ -2,8 +2,8 @@
 
 ## Basic Info
 - Dataset Key: `88`
-- Source Command: `aihubshell -mode l -datasetkey 88`
-- Collected At: `2026-03-17T03:00:00+00:00`
+- Source Command: `/root/.local/bin/aihubshell -mode l -datasetkey 88`
+- Collected At: `2026-03-17T08:40:25.750131+00:00`
 - Parse Status: `success`
 - Inferred tags:
   - `ocr/document`

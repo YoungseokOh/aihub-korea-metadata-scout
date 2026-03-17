@@ -25,8 +25,8 @@
     "032.공공행정문서 OCR/01.데이터/01.Training/[원천]train_partly_labeling_03.zip"
   ],
   "notices": [],
-  "source_command": "aihubshell -mode l -datasetkey 88",
-  "collected_at": "2026-03-17T03:00:00Z",
+  "source_command": "/root/.local/bin/aihubshell -mode l -datasetkey 88",
+  "collected_at": "2026-03-17T08:40:25.750131Z",
   "parse_status": "success",
   "parse_warnings": [],
   "inferred_summary": "제목과 파일 트리를 기준으로 보면 이 데이터셋은 `ocr/document` 성격의 `text` 자료로 보입니다. 확인 가능한 파일은 23개이며 알려진 총 용량은 386.0 GB입니다. training/validation 분리가 보여서 기본 실험 파이프라인을 구성하기는 쉬워 보입니다. 세부 의미 해석은 하지 않았고, 이 설명은 제목과 파일 트리만으로 추론했습니다 (inferred from title and file tree only).",
@@ -569,7 +569,7 @@
       "라벨링 데이터가 보여 활용 가설을 세우기 쉽습니다."
     ]
   },
-  "raw_output_cache_path": null,
-  "normalized_output_path": null,
+  "raw_output_cache_path": "/root/aihub-korea-metadata-scout/data/raw/datasets/88.txt",
+  "normalized_output_path": "/root/aihub-korea-metadata-scout/data/normalized/datasets/88.json",
   "markdown_output_path": "/root/aihub-korea-metadata-scout/data/generated/datasets/88-공공행정문서-ocr.md"
 }
