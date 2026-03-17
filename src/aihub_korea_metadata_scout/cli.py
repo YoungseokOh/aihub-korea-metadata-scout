@@ -233,6 +233,11 @@ def summarize(datasetkey: int = typer.Option(..., "--datasetkey", min=1)) -> Non
 @app.command()
 def scan(
     limit: int = typer.Option(20, min=1, help="Maximum number of datasets to inspect."),
+    all: bool = typer.Option(
+        False,
+        "--all",
+        help="Inspect every dataset returned by the listing command.",
+    ),
     refresh: bool = typer.Option(
         False, help="Re-fetch datasets even if normalized JSON already exists."
     ),
@@ -246,11 +251,11 @@ def scan(
         _handle_error(error)
         return
 
-    selected = listing.datasets[:limit]
+    selected = listing.datasets if all else listing.datasets[:limit]
     result = ScanResult(
         source_command=listing.source_command,
         collected_at=datetime.now(UTC),
-        limit=limit,
+        limit=None if all else limit,
         total_listed=listing.dataset_count,
         list_output_path=listing.normalized_output_path,
     )
@@ -281,7 +286,8 @@ def scan(
     result.scan_output_path = path_to_str(scan_path)
 
     console.print(
-        f"Processed={result.processed} Skipped={result.skipped} Failed={result.failed} "
+        f"Selected={len(selected)} Processed={result.processed} "
+        f"Skipped={result.skipped} Failed={result.failed} "
         f"| scan manifest: {scan_path}"
     )
     console.print(f"Catalog Markdown: {markdown_path}")

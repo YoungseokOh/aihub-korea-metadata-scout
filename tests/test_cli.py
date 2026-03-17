@@ -239,5 +239,41 @@ def test_scan_command_uses_existing_summaries_and_builds_catalog(
     result = runner.invoke(app, ["scan", "--limit", "2"])
 
     assert result.exit_code == 0
+    assert "Selected=2" in result.stdout
     assert "Skipped=2" in result.stdout
     assert "dataset-catalog.md" in result.stdout
+
+
+def test_scan_command_supports_all_flag(monkeypatch, tmp_path: Path) -> None:
+    settings = settings_for(tmp_path)
+    monkeypatch.setattr("aihub_korea_metadata_scout.cli._require_runtime", lambda: settings)
+    monkeypatch.setattr(
+        "aihub_korea_metadata_scout.cli.run_list_datasets", lambda settings: sample_list_result()
+    )
+    monkeypatch.setattr(
+        "aihub_korea_metadata_scout.cli.load_existing_summary",
+        lambda settings, dataset_key: sample_summary(),
+    )
+    monkeypatch.setattr(
+        "aihub_korea_metadata_scout.cli.generate_dataset_brief",
+        lambda settings, summary: (
+            tmp_path / "data" / "generated" / "datasets" / "88-공공행정문서-ocr.md"
+        ),
+    )
+    monkeypatch.setattr(
+        "aihub_korea_metadata_scout.cli.build_catalog_index",
+        lambda settings: (
+            tmp_path / "data" / "generated" / "index" / "dataset-catalog.md",
+            tmp_path / "data" / "normalized" / "catalog.json",
+        ),
+    )
+    monkeypatch.setattr(
+        "aihub_korea_metadata_scout.cli.write_scan_result",
+        lambda settings, result: tmp_path / "data" / "normalized" / "scans" / "scan.json",
+    )
+
+    result = runner.invoke(app, ["scan", "--all"])
+
+    assert result.exit_code == 0
+    assert "Selected=2" in result.stdout
+    assert "Skipped=2" in result.stdout
