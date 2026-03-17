@@ -1,0 +1,96 @@
+{
+  "generated_at": "2026-03-17T03:31:52.635897+00:00",
+  "dataset_count": 2,
+  "sections": {
+    "top_opportunity": [
+      {
+        "dataset_key": 86,
+        "title": "감성대화",
+        "opportunity_score": 8,
+        "difficulty_score": 3,
+        "data_readiness_score": 8,
+        "human_size": "19.9 MB",
+        "modality_guess": "text",
+        "category_guess": "speech/dialogue"
+      },
+      {
+        "dataset_key": 88,
+        "title": "공공행정문서 OCR",
+        "opportunity_score": 6,
+        "difficulty_score": 8,
+        "data_readiness_score": 5,
+        "human_size": "386.0 GB",
+        "modality_guess": "text",
+        "category_guess": "ocr/document"
+      }
+    ],
+    "easiest": [
+      {
+        "dataset_key": 86,
+        "title": "감성대화",
+        "opportunity_score": 8,
+        "difficulty_score": 3,
+        "data_readiness_score": 8,
+        "human_size": "19.9 MB",
+        "modality_guess": "text",
+        "category_guess": "speech/dialogue"
+      },
+      {
+        "dataset_key": 88,
+        "title": "공공행정문서 OCR",
+        "opportunity_score": 6,
+        "difficulty_score": 8,
+        "data_readiness_score": 5,
+        "human_size": "386.0 GB",
+        "modality_guess": "text",
+        "category_guess": "ocr/document"
+      }
+    ],
+    "largest": [
+      {
+        "dataset_key": 88,
+        "title": "공공행정문서 OCR",
+        "opportunity_score": 6,
+        "difficulty_score": 8,
+        "data_readiness_score": 5,
+        "human_size": "386.0 GB",
+        "modality_guess": "text",
+        "category_guess": "ocr/document"
+      },
+      {
+        "dataset_key": 86,
+        "title": "감성대화",
+        "opportunity_score": 8,
+        "difficulty_score": 3,
+        "data_readiness_score": 8,
+        "human_size": "19.9 MB",
+        "modality_guess": "text",
+        "category_guess": "speech/dialogue"
+      }
+    ],
+    "multimodal": [],
+    "b2b": [
+      {
+        "dataset_key": 86,
+        "title": "감성대화",
+        "opportunity_score": 8,
+        "difficulty_score": 3,
+        "data_readiness_score": 8,
+        "human_size": "19.9 MB",
+        "modality_guess": "text",
+        "category_guess": "speech/dialogue"
+      },
+      {
+        "dataset_key": 88,
+        "title": "공공행정문서 OCR",
+        "opportunity_score": 6,
+        "difficulty_score": 8,
+        "data_readiness_score": 5,
+        "human_size": "386.0 GB",
+        "modality_guess": "text",
+        "category_guess": "ocr/document"
+      }
+    ],
+    "consumer": []
+  }
+}

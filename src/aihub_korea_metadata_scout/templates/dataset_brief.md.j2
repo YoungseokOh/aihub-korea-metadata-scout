@@ -1,0 +1,83 @@
+# {{ summary.title }}
+
+## Basic Info
+- Dataset Key: `{{ summary.dataset_key }}`
+- Source Command: `{{ summary.source_command }}`
+- Collected At: `{{ summary.collected_at.isoformat() }}`
+- Parse Status: `{{ summary.parse_status }}`
+
+## File Overview
+- File count: `{{ summary.file_count }}`
+- Total known size: `{{ summary.human_size }}`
+- Representative file paths:
+{% if summary.sample_file_paths %}
+{% for path in summary.sample_file_paths %}
+  - `{{ path }}`
+{% endfor %}
+{% else %}
+  - 파일 경로를 충분히 확인하지 못했습니다.
+{% endif %}
+- Notices / warnings:
+{% if summary.notices %}
+{% for notice in summary.notices %}
+  - {{ notice }}
+{% endfor %}
+{% else %}
+  - 공지사항은 보이지 않았습니다.
+{% endif %}
+{% if summary.parse_warnings %}
+{% for warning in summary.parse_warnings %}
+  - 파싱 주의: {{ warning }}
+{% endfor %}
+{% endif %}
+
+## What This Dataset Appears To Be
+{{ summary.inferred_summary }}
+
+## Potential Use Cases
+{% for use_case in summary.business_use_cases %}
+- {{ use_case }}
+{% endfor %}
+
+## Business Model Exploration
+- likely customer types:
+{% for item in summary.customer_segments %}
+  - {{ item }}
+{% endfor %}
+- possible product ideas:
+{% for item in summary.business_use_cases %}
+  - {{ item }}
+{% endfor %}
+- monetization paths:
+{% for item in summary.monetization_models %}
+  - {{ item }}
+{% endfor %}
+- why it could be interesting commercially:
+{% for item in opportunity.why_interesting %}
+  - {{ item }}
+{% endfor %}
+- why it might fail commercially:
+{% for item in opportunity.why_it_might_fail %}
+  - {{ item }}
+{% endfor %}
+
+## Practicality Assessment
+{% for item in opportunity.practicality_assessment %}
+- {{ item }}
+{% endfor %}
+- legal/policy caution placeholder: {{ opportunity.legal_caution }}
+
+## Scores
+- Opportunity score: `{{ summary.opportunity_score }}` / 10
+- Build difficulty: `{{ summary.difficulty_score }}` / 10
+- Data readiness: `{{ summary.data_readiness_score }}` / 10
+- Score reasons:
+{% for reason in summary.score_reasons %}
+  - {{ reason }}
+{% endfor %}
+
+## Raw Metadata Snapshot
+```json
+{{ snapshot_json }}
+```
+

@@ -1,0 +1,22 @@
+==========================================
+aihubshell version 25.09.19 v0.6
+==========================================
+Fetching file tree structure...
+The contents are encoded in UTF-8 including Korean characters.
+If the following contents are not output normally,
+Please modify the character information of the OS.
+=================공지사항===================
+==========================================
+
+    └─018.감성대화
+        ├─Training_221115_add
+        │  ├─원천데이터
+        │  │  └─감성대화말뭉치(최종데이터)_Training.zip | 10 MB | 66046
+        │  └─라벨링데이터
+        │      └─감성대화말뭉치(최종데이터)_Training.zip | 8 MB | 66047
+        └─Validation_221115_add
+            ├─라벨링데이터
+            │  └─감성대화말뭉치(최종데이터)_Validation.zip | 969 KB | 66048
+            └─원천데이터
+                └─감성대화말뭉치(최종데이터)_Validation.zip | 1 MB | 66049
+

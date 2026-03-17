@@ -1,0 +1,50 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "aihub-korea-metadata-scout"
+version = "0.1.0"
+description = "Metadata-only exploration tooling for AI-Hub Korea datasets using the official aihubshell."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+  { name = "OpenAI Codex" },
+]
+dependencies = [
+  "jinja2>=3.1.6,<4.0.0",
+  "pydantic>=2.11.3,<3.0.0",
+  "pydantic-settings>=2.8.1,<3.0.0",
+  "rich>=14.0.0,<15.0.0",
+  "typer>=0.15.2,<1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.3.5,<9.0.0",
+  "ruff>=0.11.2,<1.0.0",
+]
+
+[project.scripts]
+aihub-korea-scout = "aihub_korea_metadata_scout.cli:app"
+
+[tool.uv]
+package = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["B", "C4", "E", "F", "I", "N", "RUF", "SIM", "UP"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-ra"
+
