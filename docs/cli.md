@@ -41,6 +41,22 @@ uv run aihub-korea-scout list
 uv run aihub-korea-scout list --limit 10
 ```
 
+### `search`
+
+Search datasets by title, inferred tags, and collected metadata.
+
+```bash
+uv run aihub-korea-scout search 번호판
+uv run aihub-korea-scout search OCR --limit 10
+```
+
+Behavior:
+
+- always refreshes the latest dataset list first
+- searches existing normalized dataset summaries more deeply than the list view
+- auto-inspects title-matched datasets that do not already have summary JSON
+- does not create a separate search artifact; it reuses list/inspect raw cache and normalized JSON
+
 ### `inspect`
 
 Fetch and normalize one dataset file tree.
@@ -86,9 +102,10 @@ uv run aihub-korea-scout build-index
 1. `bootstrap`
 2. `doctor`
 3. `list`
-4. `inspect` or `summarize`
-5. `scan`
-6. `build-index`
+4. `search`
+5. `inspect` or `summarize`
+6. `scan`
+7. `build-index`
 
 ## Temporary Output Directory Pattern
 
@@ -99,4 +116,3 @@ env AIHUB_OUTPUT_DIR=/tmp/aihub-smoke/data \
     AIHUB_CACHE_DIR=/tmp/aihub-smoke/data/raw \
     uv run aihub-korea-scout summarize --datasetkey 593
 ```
-

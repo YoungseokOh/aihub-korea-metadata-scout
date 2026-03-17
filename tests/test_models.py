@@ -39,6 +39,7 @@ def test_dataset_summary_populates_slug_human_size_and_samples() -> None:
     assert summary.slug == "공공행정문서-ocr"
     assert summary.human_size.endswith("GB")
     assert summary.sample_file_paths == ["032.공공행정문서 OCR/01.데이터/[라벨]train.zip"]
+    assert summary.tags == []
 
 
 def test_settings_load_defaults_and_absolute_paths(tmp_path: Path) -> None:

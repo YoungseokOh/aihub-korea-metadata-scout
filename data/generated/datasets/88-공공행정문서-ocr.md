@@ -5,6 +5,14 @@
 - Source Command: `aihubshell -mode l -datasetkey 88`
 - Collected At: `2026-03-17T03:00:00+00:00`
 - Parse Status: `success`
+- Inferred tags:
+  - `ocr/document`
+  - `text`
+  - `image`
+  - `ocr`
+  - `공공행정`
+  - `문서`
+  - `공공행정문서`
 
 ## File Overview
 - File count: `23`
@@ -70,6 +78,15 @@
 {
   "dataset_key": 88,
   "title": "공공행정문서 OCR",
+  "tags": [
+    "ocr/document",
+    "text",
+    "image",
+    "ocr",
+    "공공행정",
+    "문서",
+    "공공행정문서"
+  ],
   "category_guess": "ocr/document",
   "modality_guess": "text",
   "file_count": 23,

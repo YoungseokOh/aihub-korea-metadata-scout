@@ -14,7 +14,7 @@ from aihub_korea_metadata_scout.config import (
     get_settings,
 )
 from aihub_korea_metadata_scout.logging import configure_logging, get_logger
-from aihub_korea_metadata_scout.models import ScanResult, path_to_str
+from aihub_korea_metadata_scout.models import ScanResult, SearchResult, path_to_str
 from aihub_korea_metadata_scout.pipeline.build_catalog import build_catalog_index
 from aihub_korea_metadata_scout.pipeline.generate_markdown import generate_dataset_brief
 from aihub_korea_metadata_scout.pipeline.inspect_dataset import (
@@ -22,6 +22,7 @@ from aihub_korea_metadata_scout.pipeline.inspect_dataset import (
     load_existing_summary,
 )
 from aihub_korea_metadata_scout.pipeline.list_datasets import run_list_datasets
+from aihub_korea_metadata_scout.pipeline.search_datasets import search_datasets
 from aihub_korea_metadata_scout.shell.install import InstallationError, install_aihubshell
 from aihub_korea_metadata_scout.shell.wrapper import (
     AIHubShellWrapper,
@@ -75,6 +76,25 @@ def _print_summary_table(summary) -> None:
     table.add_row("Opportunity", str(summary.opportunity_score))
     table.add_row("Difficulty", str(summary.difficulty_score))
     table.add_row("Readiness", str(summary.data_readiness_score))
+    console.print(table)
+
+
+def _print_search_table(result: SearchResult, limit: int | None = None) -> None:
+    matches = result.matches[:limit] if limit else result.matches
+    table = Table(title=f"Search Results: {result.query}")
+    table.add_column("Dataset Key", justify="right")
+    table.add_column("Title", overflow="fold")
+    table.add_column("Match Sources")
+    table.add_column("Tags", overflow="fold")
+    table.add_column("Summary")
+    for match in matches:
+        table.add_row(
+            str(match.dataset_key),
+            match.title,
+            ", ".join(match.match_sources),
+            ", ".join(match.tags[:8]) if match.tags else "-",
+            "yes" if match.has_summary else "no",
+        )
     console.print(table)
 
 
@@ -196,6 +216,35 @@ def list_datasets(
         ]
     )
     console.print(f"Saved normalized listing to {result.normalized_output_path}")
+
+
+@app.command()
+def search(
+    query: str = typer.Argument(..., help="Keyword query for title/tag/metadata search."),
+    limit: int | None = typer.Option(None, min=1, help="Only print the first N matches."),
+) -> None:
+    """Search datasets by title, inferred tags, and collected metadata."""
+
+    try:
+        settings = _require_runtime()
+        result = search_datasets(settings, query)
+    except (ConfigurationError, ShellExecutionError) as error:
+        _handle_error(error)
+        return
+
+    if not result.matches:
+        console.print(f"No matches found for `{query}` in the current search scope.")
+        return
+
+    _print_search_table(result, limit=limit)
+    console.print(
+        "Matches="
+        f"{result.total_matches} | inspected during search="
+        f"{len(result.inspected_during_search)}"
+    )
+    if result.search_warnings:
+        for warning in result.search_warnings:
+            console.print(f"[yellow]warning:[/yellow] {warning}")
 
 
 @app.command()

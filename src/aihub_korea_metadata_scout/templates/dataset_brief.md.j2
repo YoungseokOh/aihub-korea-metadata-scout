@@ -5,6 +5,14 @@
 - Source Command: `{{ summary.source_command }}`
 - Collected At: `{{ summary.collected_at.isoformat() }}`
 - Parse Status: `{{ summary.parse_status }}`
+- Inferred tags:
+{% if summary.tags %}
+{% for tag in summary.tags %}
+  - `{{ tag }}`
+{% endfor %}
+{% else %}
+  - 태그를 충분히 추론하지 못했습니다.
+{% endif %}
 
 ## File Overview
 - File count: `{{ summary.file_count }}`
@@ -80,4 +88,3 @@
 ```json
 {{ snapshot_json }}
 ```
-

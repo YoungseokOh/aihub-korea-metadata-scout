@@ -67,6 +67,7 @@ bash run.sh --help
 bash run.sh bootstrap
 bash run.sh doctor
 bash run.sh list --limit 5
+bash run.sh search 번호판
 bash run.sh inspect --datasetkey 593
 bash run.sh summarize --datasetkey 593
 bash run.sh scan --limit 20
@@ -179,6 +180,21 @@ bash run.sh list
 bash run.sh list --limit 10
 ```
 
+### 키워드/태그 검색
+
+```bash
+bash run.sh search 번호판
+bash run.sh search OCR --limit 10
+```
+
+`search`는 다음 범위를 함께 봅니다.
+
+- 최신 `list` 결과의 제목
+- 이미 수집된 `normalized/datasets/*.json`의 태그, metadata lines, sample file paths, notices
+- 최신 목록에서 제목이 매치되지만 아직 summary가 없는 항목은 자동 `inspect`
+
+여기서 태그는 AI-Hub가 공식 제공하는 태그가 아니라, 제목/카테고리 추정/모달리티 추정/metadata/file path에서 로컬로 추론한 검색용 태그입니다.
+
 ### 개별 데이터셋 분석
 
 ```bash
@@ -217,6 +233,7 @@ bash run.sh build-index
 - `--all`을 주면 목록에 나온 전체 데이터셋을 끝까지 순회합니다.
 - 이미 생성된 `normalized/datasets/<datasetkey>.json`이 있으면 기본적으로 재조회하지 않고 재사용합니다.
 - 모든 데이터를 다시 조회하고 싶으면 `./run.sh scan --all --refresh`를 사용하면 됩니다.
+- `search`의 태그 검색 범위를 넓히고 싶으면 먼저 `./run.sh scan --all`로 summary JSON을 충분히 쌓아 두는 편이 좋습니다.
 
 ## 출력 구조
 

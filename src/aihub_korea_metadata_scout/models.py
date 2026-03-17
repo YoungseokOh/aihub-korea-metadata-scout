@@ -82,6 +82,7 @@ class DatasetEntry(BaseScoutModel):
     title: str
     raw_title: str
     slug: str | None = None
+    tags: list[str] = Field(default_factory=list)
     category_guess: str | None = None
     modality_guess: str | None = None
     notices: list[str] = Field(default_factory=list)
@@ -141,6 +142,7 @@ class DatasetSummary(BaseScoutModel):
     title: str
     raw_title: str
     slug: str | None = None
+    tags: list[str] = Field(default_factory=list)
     category_guess: str | None = None
     modality_guess: str | None = None
     file_count: int = 0
@@ -183,6 +185,7 @@ class DatasetSummary(BaseScoutModel):
         return {
             "dataset_key": self.dataset_key,
             "title": self.title,
+            "tags": self.tags[:10],
             "category_guess": self.category_guess,
             "modality_guess": self.modality_guess,
             "file_count": self.file_count,
@@ -204,6 +207,36 @@ class DatasetListResult(BaseScoutModel):
     datasets: list[DatasetEntry] = Field(default_factory=list)
     raw_output_cache_path: str | None = None
     normalized_output_path: str | None = None
+
+
+class SearchMatch(BaseScoutModel):
+    dataset_key: int
+    title: str
+    tags: list[str] = Field(default_factory=list)
+    match_sources: list[str] = Field(default_factory=list)
+    has_summary: bool = False
+    category_guess: str | None = None
+    modality_guess: str | None = None
+    parse_status: ParseStatus = "success"
+    normalized_output_path: str | None = None
+    markdown_output_path: str | None = None
+
+
+class SearchResult(BaseScoutModel):
+    query: str
+    normalized_query: str
+    tokens: list[str] = Field(default_factory=list)
+    source_command: str
+    collected_at: datetime
+    total_listed: int = 0
+    list_output_path: str | None = None
+    inspected_during_search: list[int] = Field(default_factory=list)
+    search_warnings: list[str] = Field(default_factory=list)
+    matches: list[SearchMatch] = Field(default_factory=list)
+
+    @property
+    def total_matches(self) -> int:
+        return len(self.matches)
 
 
 class ScanResult(BaseScoutModel):

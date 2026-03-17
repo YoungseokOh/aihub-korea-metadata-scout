@@ -41,6 +41,7 @@ def test_render_dataset_brief_contains_required_sections() -> None:
 
     assert "# 감성대화" in markdown
     assert "## Basic Info" in markdown
+    assert "Inferred tags" in markdown
     assert "## Scores" in markdown
     assert "inferred from title and file tree only" in markdown
     assert "```json" in markdown

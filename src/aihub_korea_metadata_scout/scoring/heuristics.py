@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import re
 from collections.abc import Iterable
+from pathlib import PurePosixPath
 
 from aihub_korea_metadata_scout.models import DatasetEntry, DatasetSummary
 
@@ -25,6 +27,56 @@ CATEGORY_RULES = [
     ("computer-vision", ("이미지", "영상", "객체", "랜드마크", "안면")),
     ("nlp/knowledge", ("텍스트", "요약", "질의응답", "말뭉치", "지식")),
 ]
+
+TAG_TOKEN_RE = re.compile(r"[0-9A-Za-z가-힣]{2,}")
+TAG_SKIP_RE = re.compile(r"^(train|training|valid|validation|test)(?:[\d_-].*)?$")
+TAG_DATE_RE = re.compile(r"^\d{6,8}$")
+TAG_STOPWORDS = {
+    "ai",
+    "hub",
+    "aihubshell",
+    "dataset",
+    "datasets",
+    "data",
+    "file",
+    "files",
+    "train",
+    "training",
+    "valid",
+    "validation",
+    "test",
+    "zip",
+    "tar",
+    "gz",
+    "json",
+    "csv",
+    "txt",
+    "xml",
+    "xlsx",
+    "jpg",
+    "jpeg",
+    "png",
+    "wav",
+    "mp3",
+    "mp4",
+    "데이터",
+    "원천",
+    "원천데이터",
+    "라벨",
+    "라벨링",
+    "라벨링데이터",
+    "파일",
+    "추가",
+    "보완",
+    "개방",
+    "원본",
+    "원본이미지",
+    "폴더구조수정",
+    "partly",
+    "labeling",
+    "labling",
+}
+MAX_TAGS = 16
 
 
 def _normalize_texts(*parts: Iterable[str] | str | None) -> str:
@@ -59,9 +111,115 @@ def infer_category(
     return None
 
 
+def _normalize_tag(value: str) -> str:
+    return " ".join(value.casefold().strip().split())
+
+
+def _split_tag_text(text: str) -> list[str]:
+    separated = re.sub(r"[\\/\\[\\](){}.,:;+]+", " ", text)
+    separated = separated.replace("-", " ").replace("_", " ")
+    separated = re.sub(r"([가-힣])([A-Za-z])", r"\1 \2", separated)
+    separated = re.sub(r"([A-Za-z])([가-힣])", r"\1 \2", separated)
+    separated = re.sub(r"([a-z])([A-Z])", r"\1 \2", separated)
+    return TAG_TOKEN_RE.findall(separated)
+
+
+def _should_skip_tag(normalized: str) -> bool:
+    if len(normalized) < 2 or len(normalized) > 24 or normalized.isdigit():
+        return True
+    if TAG_SKIP_RE.match(normalized) or TAG_DATE_RE.match(normalized):
+        return True
+    if normalized in TAG_STOPWORDS:
+        return True
+    return re.fullmatch(r"(원천데이터|라벨링데이터)\d+", normalized) is not None
+
+
+def _file_tag_parts(file_paths: Iterable[str]) -> list[str]:
+    parts: list[str] = []
+    for path in file_paths:
+        pure_path = PurePosixPath(path)
+        stem = PurePosixPath(pure_path.name).stem
+        parts.append(stem)
+        parent_name = pure_path.parent.name
+        if parent_name:
+            parts.append(parent_name)
+    return parts
+
+
+def _merge_tag_score(scores: dict[str, int], value: str, score: int) -> None:
+    normalized = _normalize_tag(value)
+    if not normalized or _should_skip_tag(normalized):
+        return
+    scores[normalized] = max(scores.get(normalized, 0), score)
+
+
+def _sorted_tags(scores: dict[str, int]) -> list[str]:
+    ordered = sorted(scores.items(), key=lambda item: (-item[1], item[0]))
+    return [tag for tag, _ in ordered[:MAX_TAGS]]
+
+
+def _keyword_tags(title: str, file_paths: Iterable[str], metadata_lines: Iterable[str]) -> set[str]:
+    haystack = _normalize_texts(title, file_paths, metadata_lines)
+    tags: set[str] = set()
+    for label, keywords in MODALITY_RULES + CATEGORY_RULES:
+        if any(keyword.casefold() in haystack for keyword in keywords):
+            tags.add(label)
+            tags.update(
+                _normalize_tag(keyword)
+                for keyword in keywords
+                if keyword.casefold() in haystack
+            )
+    return tags
+
+
+def _token_tags(parts: Iterable[str]) -> set[str]:
+    tags: set[str] = set()
+    for part in parts:
+        for token in _split_tag_text(part):
+            normalized = _normalize_tag(token)
+            if _should_skip_tag(normalized):
+                continue
+            tags.add(normalized)
+    return tags
+
+
+def infer_tags(
+    title: str,
+    *,
+    category_guess: str | None = None,
+    modality_guess: str | None = None,
+    metadata_lines: Iterable[str] = (),
+    file_paths: Iterable[str] = (),
+    notices: Iterable[str] = (),
+) -> list[str]:
+    scores: dict[str, int] = {}
+    if category_guess:
+        _merge_tag_score(scores, category_guess, 120)
+    if modality_guess:
+        _merge_tag_score(scores, modality_guess, 110)
+
+    for tag in _keyword_tags(title, file_paths, metadata_lines):
+        _merge_tag_score(scores, tag, 100)
+    for tag in _token_tags([title]):
+        _merge_tag_score(scores, tag, 90)
+    for tag in _token_tags(metadata_lines):
+        _merge_tag_score(scores, tag, 55)
+    for tag in _token_tags(notices):
+        _merge_tag_score(scores, tag, 45)
+    for tag in _token_tags(_file_tag_parts(file_paths)):
+        _merge_tag_score(scores, tag, 35)
+    return _sorted_tags(scores)
+
+
 def enrich_entry(entry: DatasetEntry) -> DatasetEntry:
     entry.modality_guess = infer_modality(entry.title, (), ())
     entry.category_guess = infer_category(entry.title, (), ())
+    entry.tags = infer_tags(
+        entry.title,
+        category_guess=entry.category_guess,
+        modality_guess=entry.modality_guess,
+        notices=entry.notices,
+    )
     return entry
 
 
@@ -129,6 +287,14 @@ def enrich_summary(summary: DatasetSummary) -> DatasetSummary:
         summary.title,
         [item.path for item in summary.files],
         summary.metadata_lines,
+    )
+    summary.tags = infer_tags(
+        summary.title,
+        category_guess=summary.category_guess,
+        modality_guess=summary.modality_guess,
+        metadata_lines=summary.metadata_lines,
+        file_paths=[item.path for item in summary.files],
+        notices=summary.notices,
     )
     summary.inferred_summary = build_inferred_summary(summary)
     return summary

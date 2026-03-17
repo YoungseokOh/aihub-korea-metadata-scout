@@ -12,6 +12,8 @@ from aihub_korea_metadata_scout.models import (
     DatasetEntry,
     DatasetListResult,
     DatasetSummary,
+    SearchMatch,
+    SearchResult,
 )
 from aihub_korea_metadata_scout.shell.install import InstallResult
 
@@ -85,6 +87,42 @@ def sample_summary() -> DatasetSummary:
         score_reasons=opportunity.score_reasons,
         business_opportunity=opportunity,
         normalized_output_path="/tmp/88.json",
+    )
+
+
+def sample_search_result() -> SearchResult:
+    return SearchResult(
+        query="번호판",
+        normalized_query="번호판",
+        tokens=["번호판"],
+        source_command="aihubshell -mode l",
+        collected_at=datetime(2026, 3, 17, 3, 0, 0, tzinfo=UTC),
+        total_listed=2,
+        list_output_path="/tmp/latest.json",
+        inspected_during_search=[101],
+        matches=[
+            SearchMatch(
+                dataset_key=101,
+                title="번호판A",
+                tags=["번호판", "image", "computer-vision"],
+                match_sources=["title", "tags"],
+                has_summary=True,
+                category_guess="computer-vision",
+                modality_guess="image",
+                parse_status="success",
+                normalized_output_path="/tmp/101.json",
+            ),
+            SearchMatch(
+                dataset_key=102,
+                title="번호판B",
+                tags=["ocr/document", "번호판"],
+                match_sources=["tags"],
+                has_summary=False,
+                category_guess="ocr/document",
+                modality_guess="image",
+                parse_status="success",
+            ),
+        ],
     )
 
 
@@ -277,3 +315,36 @@ def test_scan_command_supports_all_flag(monkeypatch, tmp_path: Path) -> None:
     assert result.exit_code == 0
     assert "Selected=2" in result.stdout
     assert "Skipped=2" in result.stdout
+
+
+def test_search_command_prints_search_matches(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setattr(
+        "aihub_korea_metadata_scout.cli._require_runtime", lambda: settings_for(tmp_path)
+    )
+    monkeypatch.setattr(
+        "aihub_korea_metadata_scout.cli.search_datasets",
+        lambda settings, query: sample_search_result(),
+    )
+
+    result = runner.invoke(app, ["search", "번호판"])
+
+    assert result.exit_code == 0
+    assert "Search Results: 번호판" in result.stdout
+    assert "번호판A" in result.stdout
+    assert "Matches=2" in result.stdout
+
+
+def test_search_command_supports_limit(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setattr(
+        "aihub_korea_metadata_scout.cli._require_runtime", lambda: settings_for(tmp_path)
+    )
+    monkeypatch.setattr(
+        "aihub_korea_metadata_scout.cli.search_datasets",
+        lambda settings, query: sample_search_result(),
+    )
+
+    result = runner.invoke(app, ["search", "번호판", "--limit", "1"])
+
+    assert result.exit_code == 0
+    assert "번호판A" in result.stdout
+    assert "번호판B" not in result.stdout

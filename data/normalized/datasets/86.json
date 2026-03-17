@@ -3,6 +3,16 @@
   "title": "감성대화",
   "raw_title": "018.감성대화",
   "slug": "감성대화",
+  "tags": [
+    "speech/dialogue",
+    "text",
+    "nlp/knowledge",
+    "대화",
+    "말뭉치",
+    "감성대화",
+    "감성대화말뭉치",
+    "최종데이터"
+  ],
   "category_guess": "speech/dialogue",
   "modality_guess": "text",
   "file_count": 4,
