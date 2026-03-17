@@ -177,3 +177,7 @@ These samples are derived from fixed test fixtures rather than live scans, so th
 - `cli.py`: Typer-based command surface
 
 The architecture is intentionally simple: one shell boundary, one parser boundary, one normalized artifact format, and one reporting layer.
+
+## Additional Docs
+
+Detailed project docs live under [`docs/`](./docs/README.md).
