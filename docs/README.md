@@ -10,6 +10,7 @@ This folder expands the root README into task-focused documents.
 - [parsing-and-scoring.md](./parsing-and-scoring.md): parser behavior, uncertainty handling, and scoring heuristics
 - [development.md](./development.md): local workflow, testing, linting, and contribution expectations
 - [smoke-tests.md](./smoke-tests.md): safe end-to-end smoke-test flow using a temporary output directory
+- [product-direction.md](./product-direction.md): product/ideation direction decision log (what app to build, and why)
 
 ## Reading Order
 
