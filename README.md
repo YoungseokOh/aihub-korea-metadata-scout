@@ -246,7 +246,11 @@ provider별 동작:
 - `data/generated/ideation/<datasetkey>-<slug>.md`: 사람이 읽는 아이디어 브리프
 - `data/normalized/idea-ranking.json`, `data/generated/index/idea-ranking.md`: 데이터셋 간 랭킹/비교
 
+`ideate`는 기본적으로 **솔로 개발자의 B2C 앱 관점**에서 데이터셋당 **최소 5개**의 서로 다른 앱 아이디어를 생성하고, 각 아이디어를 MVP 흐름·수익모델·추론 비용·솔로 실현성·차별화까지 자세히 채워 판정/점수화합니다. `--ideas`는 최소 개수(기본 5)입니다.
+
 `ideate`는 기존 heuristic 분석을 대체하지 않고 별도 레이어로 보강합니다. 점수와 판정은 모두 메타데이터 기반 추정이며, 라이선스·라벨 품질·정책 적합성은 별도 검토가 필요합니다.
+
+이 워크플로(데이터셋 → 자세한 앱 아이디어 ≥5개 → 판정/랭킹)는 `aihub-app-ideation` 스킬로도 제공됩니다. Claude Code에서 "이 데이터셋으로 앱 아이디어 뽑아줘"처럼 요청하면 동일한 방법론으로 동작합니다.
 
 ## 전체 데이터셋을 전부 탐색하려면
 

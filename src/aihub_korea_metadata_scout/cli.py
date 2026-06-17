@@ -378,7 +378,9 @@ def ideate(
         None, help="LLM provider: lmstudio (default), openai/codex, or anthropic/claude."
     ),
     model: str | None = typer.Option(None, help="Override the model id for the provider."),
-    ideas: int = typer.Option(5, min=1, max=10, help="Maximum number of ideas to request."),
+    ideas: int = typer.Option(
+        5, min=5, max=10, help="Minimum number of app ideas to request (>=5)."
+    ),
     refresh: bool = typer.Option(
         False, help="Re-inspect the dataset even if a normalized summary already exists."
     ),

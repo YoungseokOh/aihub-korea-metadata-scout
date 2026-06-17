@@ -28,7 +28,28 @@
 {% for feature in idea.core_features %}
   - {{ feature }}
 {% endfor %}
-- 이 데이터가 필요한 이유: {{ idea.data_usage }}
+- 데이터 활용: {{ idea.data_usage }}
+{% if idea.mvp_flow %}
+- MVP 흐름:
+{% for step in idea.mvp_flow %}
+  - {{ step }}
+{% endfor %}
+{% endif %}
+{% if idea.monetization %}
+- 수익 모델:
+{% for item in idea.monetization %}
+  - {{ item }}
+{% endfor %}
+{% endif %}
+{% if idea.inference_note %}
+- 모델 · 추론 비용: {{ idea.inference_note }}
+{% endif %}
+{% if idea.solo_feasibility %}
+- 솔로 실현성: {{ idea.solo_feasibility }}
+{% endif %}
+{% if idea.differentiation %}
+- 차별화 무기: {{ idea.differentiation }}
+{% endif %}
 - 리스크:
 {% for risk in idea.risks %}
   - {{ risk }}

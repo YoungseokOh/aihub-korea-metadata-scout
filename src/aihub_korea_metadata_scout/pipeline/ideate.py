@@ -27,6 +27,10 @@ from aihub_korea_metadata_scout.storage.markdown_store import (
 
 TEMPLATE_DIR = Path(__file__).resolve().parents[1] / "templates"
 
+# Upper bound to avoid runaway output. The prompt targets a MINIMUM of 5 ideas, so
+# we keep everything the model returns up to this cap rather than truncating low.
+IDEA_HARD_CAP = 10
+
 
 def _environment() -> Environment:
     return Environment(
@@ -45,6 +49,10 @@ def _clamp(value: object, default: int = 5) -> int:
     return max(1, min(10, number))
 
 
+def _string_list(raw: dict, key: str) -> list[str]:
+    return [str(item) for item in raw.get(key, []) if str(item).strip()]
+
+
 def _coerce_idea(raw: dict) -> ProductIdea:
     surface = str(raw.get("app_or_web", "both")).strip().casefold()
     if surface not in {"app", "web", "both"}:
@@ -56,14 +64,19 @@ def _coerce_idea(raw: dict) -> ProductIdea:
         name=str(raw.get("name", "")).strip() or "이름 미정 아이디어",
         one_liner=str(raw.get("one_liner", "")).strip(),
         app_or_web=surface,  # type: ignore[arg-type]
-        target_users=[str(item) for item in raw.get("target_users", []) if str(item).strip()],
-        core_features=[str(item) for item in raw.get("core_features", []) if str(item).strip()],
+        target_users=_string_list(raw, "target_users"),
+        core_features=_string_list(raw, "core_features"),
         data_usage=str(raw.get("data_usage", "")).strip(),
+        mvp_flow=_string_list(raw, "mvp_flow"),
+        monetization=_string_list(raw, "monetization"),
+        inference_note=str(raw.get("inference_note", "")).strip(),
+        solo_feasibility=str(raw.get("solo_feasibility", "")).strip(),
+        differentiation=str(raw.get("differentiation", "")).strip(),
         feasibility=feasibility,  # type: ignore[arg-type]
         opportunity_score=_clamp(raw.get("opportunity_score")),
         feasibility_score=_clamp(raw.get("feasibility_score")),
         data_fit_score=_clamp(raw.get("data_fit_score")),
-        risks=[str(item) for item in raw.get("risks", []) if str(item).strip()],
+        risks=_string_list(raw, "risks"),
     )
 
 
@@ -76,7 +89,9 @@ def parse_ideation_payload(
     max_ideas: int,
 ) -> IdeationResult:
     raw_ideas = payload.get("ideas", [])
-    ideas = [_coerce_idea(item) for item in raw_ideas if isinstance(item, dict)][:max_ideas]
+    # Keep every idea the model returns (prompt targets >= max_ideas), capped only
+    # to avoid runaway output — do not truncate below the requested minimum.
+    ideas = [_coerce_idea(item) for item in raw_ideas if isinstance(item, dict)][:IDEA_HARD_CAP]
     notes = [str(item) for item in payload.get("notes", []) if str(item).strip()]
     return IdeationResult(
         dataset_key=summary.dataset_key,

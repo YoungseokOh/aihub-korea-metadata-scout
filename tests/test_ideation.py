@@ -74,6 +74,11 @@ def sample_payload(*, best_name: str = "문서 검색 SaaS") -> dict:
                 "target_users": ["공공기관", "백오피스 팀"],
                 "core_features": ["OCR 인입", "전문 검색"],
                 "data_usage": "문서 OCR 라벨로 검색 모델을 학습",
+                "mvp_flow": ["문서 업로드", "OCR 처리", "검색 UI"],
+                "monetization": ["엔터프라이즈 구독"],
+                "inference_note": "서버 추론, 사전학습 모델 파인튜닝",
+                "solo_feasibility": "B2B라 솔로엔 영업 부담",
+                "differentiation": "공공행정 도메인 특화",
                 "feasibility": "go",
                 "opportunity_score": 9,
                 "feasibility_score": 7,
@@ -87,6 +92,11 @@ def sample_payload(*, best_name: str = "문서 검색 SaaS") -> dict:
                 "target_users": ["현장 직원"],
                 "core_features": ["촬영", "자동 분류"],
                 "data_usage": "분류 라벨 활용",
+                "mvp_flow": ["촬영", "분류", "저장"],
+                "monetization": ["IAP"],
+                "inference_note": "온디바이스 분류 가능",
+                "solo_feasibility": "혼자 출시 가능",
+                "differentiation": "현장 특화 UX",
                 "feasibility": "maybe",
                 "opportunity_score": 6,
                 "feasibility_score": 5,
@@ -130,9 +140,16 @@ def test_ideate_dataset_persists_json_and_markdown(tmp_path: Path, monkeypatch) 
     markdown_path = Path(result.markdown_output_path)
     assert json_path.exists()
     assert markdown_path.exists()
+    # Richer per-idea fields flow through to the model and the rendered brief.
+    best = result.best_idea
+    assert best.mvp_flow and best.monetization
+    assert best.inference_note and best.differentiation
+
     body = markdown_path.read_text(encoding="utf-8")
     assert "문서 검색 SaaS" in body
     assert "메타데이터" in body
+    assert "MVP 흐름" in body
+    assert "차별화 무기" in body
 
 
 def test_ideate_dataset_clamps_out_of_range_scores(tmp_path: Path, monkeypatch) -> None:
@@ -189,6 +206,16 @@ def test_build_idea_ranking_orders_by_best_idea(tmp_path: Path, monkeypatch) -> 
     assert "강한 앱" in body
     # The strong dataset (key 2) should appear before the weak one (key 1).
     assert body.index("강한 데이터") < body.index("약한 데이터")
+
+
+def test_user_prompt_enforces_minimum_five_ideas() -> None:
+    from aihub_korea_metadata_scout.llm.prompts import build_user_prompt
+
+    summary = make_summary(7, "테스트")
+    # Even when asked for fewer, the prompt floors the target at 5.
+    prompt = build_user_prompt(summary, max_ideas=2)
+    assert "최소 5개" in prompt
+    assert "MVP" in prompt
 
 
 def test_resolve_provider_name_aliases() -> None:

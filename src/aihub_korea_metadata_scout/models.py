@@ -209,6 +209,11 @@ class ProductIdea(BaseScoutModel):
     target_users: list[str] = Field(default_factory=list)
     core_features: list[str] = Field(default_factory=list)
     data_usage: str = ""
+    mvp_flow: list[str] = Field(default_factory=list)
+    monetization: list[str] = Field(default_factory=list)
+    inference_note: str = ""
+    solo_feasibility: str = ""
+    differentiation: str = ""
     feasibility: FeasibilityVerdict = "maybe"
     opportunity_score: int = Field(default=5, ge=1, le=10)
     feasibility_score: int = Field(default=5, ge=1, le=10)
