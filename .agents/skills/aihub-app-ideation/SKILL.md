@@ -31,6 +31,12 @@ Use it when the user wants to explore "what could I build with this dataset?"
    one-liner" is the bar — no bare titles.
 4. **Honest feasibility.** Score and verdict must reflect reality, including the
    solo-developer lens below. Do not inflate.
+5. **Always scan competitor apps.** Every idea must include a real competitor
+   check — never assume a niche is empty. Search the App Store / Google Play and
+   the web for existing apps (Korean AND global/English), name 2–4 concrete ones
+   with what they do and where they fall short, and let that gap drive the
+   `차별화 무기`. "No competitor found" is a valid result only after an actual
+   search, and is itself a warning (small/non-existent market), not a green light.
 
 ## Default Lens: Solo Developer Building Apps
 
@@ -78,14 +84,29 @@ Spread ideas across **different angles** — don't give five variants of one app
 Cover a mix of: consumer utility, creator/content, education/learning,
 wellness/care, and a "data-as-moat" or niche angle. Each idea uses the template.
 
-### 4. Score and judge each idea
+### 4. Competitor / market scan (required)
+For each idea, do a real search before scoring — do not reason from memory alone:
+
+- Search app stores and the web for existing apps, both **Korean** (점신, 포스텔러,
+  네이버/카카오 등) and **global/English**. Useful queries: "<concept> app",
+  "<concept> 앱", "<concept> App Store / Google Play".
+- If the user has a market-scouting repo (e.g. `finding-cash-cow-android` —
+  Play Store scraping/analysis), reuse its data when it's in session scope.
+- Record 2–4 concrete competitors per idea: name, platform, what they do, price/
+  monetization if visible, and the **gap** they leave. Note incumbents that make
+  a head-on solo entry unrealistic (e.g. a category leader with huge revenue).
+- Turn the gap into the idea's `차별화 무기`, and let competitive density feed the
+  `opportunity_score` (crowded + strong incumbents → lower; real unmet gap → higher).
+- An honestly empty niche is a yellow flag (likely small market), not a win.
+
+### 5. Score and judge each idea
 Give three 1–10 scores and a verdict:
 - `opportunity_score` — market pull / consumer demand
 - `feasibility_score` — how realistically a solo dev ships it (infra, cost, skill)
 - `data_fit_score` — how well the dataset actually supports the idea
 - `feasibility`: `go` | `maybe` | `no-go`
 
-### 5. Rank and recommend
+### 6. Rank and recommend
 Rank the ideas (a simple combined weighting: opportunity 0.45, feasibility 0.35,
 data-fit 0.20 — same as the repo's `combined_score`). Recommend the top 1–2 for a
 solo builder and say why, plus the single biggest risk for each.
@@ -103,7 +124,8 @@ solo builder and say why, plus the single biggest risk for each.
 - 솔로 실현성: 혼자 출시 가능한 이유 또는 막히는 지점
 - MVP 흐름: 화면/단계 3–5개
 - 수익 모델: 구독 / IAP / 광고 / 제휴
-- 차별화 무기: 왜 글로벌·기존 앱이 못 하는가 (특히 한국 특화 우위)
+- 경쟁 앱: 실제 검색으로 찾은 기존 앱 2–4개 (국내+글로벌) — 이름·플랫폼·하는 일·빈틈. 없으면 "검색했으나 없음(=시장 작을 위험)"
+- 차별화 무기: 위 경쟁 앱이 못 채운 빈틈을 어떻게 공략하는가 (특히 한국 특화 우위)
 - 리스크: 2–3개 + 회피책
 - 점수: 기회 N/10 · 실현 N/10 · 데이터적합 N/10
 ```
@@ -145,5 +167,7 @@ pipeline. The pipeline prompt also enforces the ≥5-idea and solo-lens rules.
 ## Before Finishing
 
 - Confirm every dataset got **≥5 ideas**, each with the full template.
+- Confirm each idea has a **competitor scan from a real search** (≥2 named apps or
+  an explicit "searched, none found" note).
 - Confirm the solo-app lens was applied (or the chosen lens was stated).
 - End with a ranked recommendation and the top risk per recommended idea.
