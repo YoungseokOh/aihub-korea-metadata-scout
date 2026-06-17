@@ -21,9 +21,16 @@ data/normalized/scans/*
 !data/normalized/scans/.gitkeep
 data/normalized/catalog.json
 
+data/normalized/ideation/*
+!data/normalized/ideation/.gitkeep
+data/normalized/idea-ranking.json
+
 data/generated/datasets/*
 !data/generated/datasets/.gitkeep
 !data/generated/datasets/*.md
+data/generated/ideation/*
+!data/generated/ideation/.gitkeep
+!data/generated/ideation/*.md
 data/generated/index/*
 !data/generated/index/.gitkeep
 !data/generated/index/*.md

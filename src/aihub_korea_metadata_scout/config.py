@@ -32,6 +32,14 @@ class ScoutSettings(BaseSettings):
     output_dir: Path = Field(default=Path("data"), alias="AIHUB_OUTPUT_DIR")
     cache_dir: Path | None = Field(default=None, alias="AIHUB_CACHE_DIR")
 
+    # LLM ideation wiring. The local default targets LM Studio's OpenAI-compatible
+    # server; the same OpenAI-compatible path also serves Codex/OpenAI when the
+    # provider is switched. Claude uses the official Anthropic SDK.
+    llm_provider: str = Field(default="lmstudio", alias="AIHUB_LLM_PROVIDER")
+    llm_base_url: str | None = Field(default=None, alias="AIHUB_LLM_BASE_URL")
+    llm_model: str | None = Field(default=None, alias="AIHUB_LLM_MODEL")
+    llm_api_key: str | None = Field(default=None, alias="AIHUB_LLM_API_KEY")
+
     @model_validator(mode="after")
     def normalize_paths(self) -> ScoutSettings:
         self.output_dir = _resolve_path(self.output_dir)
@@ -67,12 +75,20 @@ class ScoutSettings(BaseSettings):
         return self.normalized_dir / "scans"
 
     @property
+    def normalized_ideation_dir(self) -> Path:
+        return self.normalized_dir / "ideation"
+
+    @property
     def generated_dir(self) -> Path:
         return self.output_dir / "generated"
 
     @property
     def generated_dataset_dir(self) -> Path:
         return self.generated_dir / "datasets"
+
+    @property
+    def generated_ideation_dir(self) -> Path:
+        return self.generated_dir / "ideation"
 
     @property
     def generated_index_dir(self) -> Path:
@@ -86,6 +102,14 @@ class ScoutSettings(BaseSettings):
     def catalog_markdown_path(self) -> Path:
         return self.generated_index_dir / "dataset-catalog.md"
 
+    @property
+    def idea_ranking_json_path(self) -> Path:
+        return self.normalized_dir / "idea-ranking.json"
+
+    @property
+    def idea_ranking_markdown_path(self) -> Path:
+        return self.generated_index_dir / "idea-ranking.md"
+
     def ensure_directories(self) -> None:
         directories = [
             self.output_dir,
@@ -96,8 +120,10 @@ class ScoutSettings(BaseSettings):
             self.normalized_list_dir,
             self.normalized_dataset_dir,
             self.normalized_scan_dir,
+            self.normalized_ideation_dir,
             self.generated_dir,
             self.generated_dataset_dir,
+            self.generated_ideation_dir,
             self.generated_index_dir,
         ]
         for directory in directories:

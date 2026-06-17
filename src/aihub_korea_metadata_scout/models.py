@@ -198,6 +198,75 @@ class DatasetSummary(BaseScoutModel):
         }
 
 
+IdeaSurface = Literal["app", "web", "both"]
+FeasibilityVerdict = Literal["go", "maybe", "no-go"]
+
+
+class ProductIdea(BaseScoutModel):
+    name: str
+    one_liner: str
+    app_or_web: IdeaSurface = "both"
+    target_users: list[str] = Field(default_factory=list)
+    core_features: list[str] = Field(default_factory=list)
+    data_usage: str = ""
+    mvp_flow: list[str] = Field(default_factory=list)
+    monetization: list[str] = Field(default_factory=list)
+    inference_note: str = ""
+    solo_feasibility: str = ""
+    differentiation: str = ""
+    feasibility: FeasibilityVerdict = "maybe"
+    opportunity_score: int = Field(default=5, ge=1, le=10)
+    feasibility_score: int = Field(default=5, ge=1, le=10)
+    data_fit_score: int = Field(default=5, ge=1, le=10)
+    risks: list[str] = Field(default_factory=list)
+
+    @property
+    def combined_score(self) -> float:
+        # Rank ideas by how attractive AND buildable they look, with a data-fit tie-breaker.
+        return round(
+            self.opportunity_score * 0.45
+            + self.feasibility_score * 0.35
+            + self.data_fit_score * 0.20,
+            3,
+        )
+
+
+class IdeationResult(BaseScoutModel):
+    dataset_key: int
+    title: str
+    provider: str
+    model: str
+    generated_at: datetime
+    overall_verdict: str = ""
+    notes: list[str] = Field(default_factory=list)
+    ideas: list[ProductIdea] = Field(default_factory=list)
+    source_summary_path: str | None = None
+    normalized_output_path: str | None = None
+    markdown_output_path: str | None = None
+
+    @property
+    def idea_count(self) -> int:
+        return len(self.ideas)
+
+    @property
+    def best_idea(self) -> ProductIdea | None:
+        if not self.ideas:
+            return None
+        return max(self.ideas, key=lambda idea: idea.combined_score)
+
+    @property
+    def ranking_score(self) -> float:
+        best = self.best_idea
+        return best.combined_score if best is not None else 0.0
+
+    @property
+    def go_idea_count(self) -> int:
+        return sum(1 for idea in self.ideas if idea.feasibility == "go")
+
+    def ranked_ideas(self) -> list[ProductIdea]:
+        return sorted(self.ideas, key=lambda idea: idea.combined_score, reverse=True)
+
+
 class DatasetListResult(BaseScoutModel):
     source_command: str
     collected_at: datetime

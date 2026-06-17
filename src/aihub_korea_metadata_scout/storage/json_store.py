@@ -5,7 +5,12 @@ from datetime import datetime
 from pathlib import Path
 
 from aihub_korea_metadata_scout.config import ScoutSettings
-from aihub_korea_metadata_scout.models import DatasetListResult, DatasetSummary, ScanResult
+from aihub_korea_metadata_scout.models import (
+    DatasetListResult,
+    DatasetSummary,
+    IdeationResult,
+    ScanResult,
+)
 
 
 def write_json(path: Path, payload: object) -> Path:
@@ -38,6 +43,27 @@ def write_dataset_summary(settings: ScoutSettings, summary: DatasetSummary) -> P
 
 def write_scan_result(settings: ScoutSettings, result: ScanResult) -> Path:
     return write_json(scan_result_path(settings, result.collected_at), result)
+
+
+def ideation_result_path(settings: ScoutSettings, dataset_key: int) -> Path:
+    return settings.normalized_ideation_dir / f"{dataset_key}.json"
+
+
+def write_ideation_result(settings: ScoutSettings, result: IdeationResult) -> Path:
+    return write_json(ideation_result_path(settings, result.dataset_key), result)
+
+
+def load_ideation_result(path: Path) -> IdeationResult:
+    return IdeationResult.model_validate_json(path.read_text(encoding="utf-8"))
+
+
+def load_ideation_results(settings: ScoutSettings) -> list[IdeationResult]:
+    if not settings.normalized_ideation_dir.exists():
+        return []
+    return [
+        load_ideation_result(path)
+        for path in sorted(settings.normalized_ideation_dir.glob("*.json"))
+    ]
 
 
 def load_dataset_summary(path: Path) -> DatasetSummary:

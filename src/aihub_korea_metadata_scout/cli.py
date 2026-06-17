@@ -13,15 +13,19 @@ from aihub_korea_metadata_scout.config import (
     ScoutSettings,
     get_settings,
 )
+from aihub_korea_metadata_scout.llm.base import LLMProviderError
+from aihub_korea_metadata_scout.llm.factory import build_provider
 from aihub_korea_metadata_scout.logging import configure_logging, get_logger
-from aihub_korea_metadata_scout.models import ScanResult, SearchResult, path_to_str
+from aihub_korea_metadata_scout.models import IdeationResult, ScanResult, SearchResult, path_to_str
 from aihub_korea_metadata_scout.pipeline.build_catalog import build_catalog_index
 from aihub_korea_metadata_scout.pipeline.generate_markdown import generate_dataset_brief
+from aihub_korea_metadata_scout.pipeline.ideate import ideate_dataset
 from aihub_korea_metadata_scout.pipeline.inspect_dataset import (
     inspect_dataset,
     load_existing_summary,
 )
 from aihub_korea_metadata_scout.pipeline.list_datasets import run_list_datasets
+from aihub_korea_metadata_scout.pipeline.rank_ideas import build_idea_ranking
 from aihub_korea_metadata_scout.pipeline.search_datasets import search_datasets
 from aihub_korea_metadata_scout.shell.install import InstallationError, install_aihubshell
 from aihub_korea_metadata_scout.shell.wrapper import (
@@ -96,6 +100,31 @@ def _print_search_table(result: SearchResult, limit: int | None = None) -> None:
             "yes" if match.has_summary else "no",
         )
     console.print(table)
+
+
+def _print_ideation_table(result: IdeationResult) -> None:
+    table = Table(title=f"App/Web Ideas: {result.dataset_key} {result.title}")
+    table.add_column("#", justify="right")
+    table.add_column("Idea", overflow="fold")
+    table.add_column("Surface")
+    table.add_column("Verdict")
+    table.add_column("Opp")
+    table.add_column("Feas")
+    table.add_column("Fit")
+    for index, idea in enumerate(result.ranked_ideas(), start=1):
+        table.add_row(
+            str(index),
+            idea.name,
+            idea.app_or_web,
+            idea.feasibility,
+            str(idea.opportunity_score),
+            str(idea.feasibility_score),
+            str(idea.data_fit_score),
+        )
+    console.print(table)
+    console.print(f"Provider={result.provider} | Model={result.model}")
+    if result.overall_verdict:
+        console.print(f"[bold]종합 판정:[/bold] {result.overall_verdict}")
 
 
 @app.callback()
@@ -340,6 +369,56 @@ def scan(
         f"| scan manifest: {scan_path}"
     )
     console.print(f"Catalog Markdown: {markdown_path}")
+
+
+@app.command()
+def ideate(
+    datasetkey: int = typer.Option(..., "--datasetkey", min=1),
+    provider: str | None = typer.Option(
+        None, help="LLM provider: lmstudio (default), openai/codex, or anthropic/claude."
+    ),
+    model: str | None = typer.Option(None, help="Override the model id for the provider."),
+    ideas: int = typer.Option(
+        5, min=5, max=10, help="Minimum number of app ideas to request (>=5)."
+    ),
+    refresh: bool = typer.Option(
+        False, help="Re-inspect the dataset even if a normalized summary already exists."
+    ),
+) -> None:
+    """Brainstorm app/web product ideas for one dataset with a local or hosted LLM."""
+
+    try:
+        settings = _require_runtime()
+        summary = None if refresh else load_existing_summary(settings, datasetkey)
+        if summary is None:
+            summary = inspect_dataset(settings, datasetkey)
+        llm = build_provider(settings, provider=provider, model=model)
+        result = ideate_dataset(settings, summary, llm, max_ideas=ideas)
+    except (ConfigurationError, ShellExecutionError, LLMProviderError) as error:
+        _handle_error(error)
+        return
+
+    if not result.ideas:
+        console.print("[yellow]모델이 아이디어를 제안하지 않았습니다.[/yellow]")
+    else:
+        _print_ideation_table(result)
+    console.print(f"Saved ideation JSON to {result.normalized_output_path}")
+    console.print(f"Saved ideation Markdown to {result.markdown_output_path}")
+
+
+@app.command("ideate-rank")
+def ideate_rank() -> None:
+    """Rank datasets by their best LLM-generated idea and build a comparison catalog."""
+
+    try:
+        settings = _require_runtime()
+        markdown_path, json_path = build_idea_ranking(settings)
+    except ConfigurationError as error:
+        _handle_error(error)
+        return
+
+    console.print(f"Saved idea ranking Markdown to {markdown_path}")
+    console.print(f"Saved idea ranking JSON to {json_path}")
 
 
 @app.command("build-index")
