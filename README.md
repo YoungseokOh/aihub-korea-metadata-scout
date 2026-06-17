@@ -128,6 +128,10 @@ cp .env.example .env
 | `AIHUB_CACHE_DIR` | 선택 | 원본 stdout 캐시 디렉터리입니다. 기본값은 `./data/raw`입니다. |
 | `PYTHON_VERSION` | 선택 | `run.sh`가 사용할 Python 버전입니다. 기본값은 `3.11`입니다. |
 | `FORCE_SYNC` | 선택 | `1`로 설정하면 `run.sh`가 캐시된 환경을 무시하고 다시 `uv sync`를 수행합니다. |
+| `AIHUB_LLM_PROVIDER` | 선택 | `ideate`가 사용할 LLM provider입니다. `lmstudio`(기본), `openai`/`codex`, `anthropic`/`claude`. |
+| `AIHUB_LLM_BASE_URL` | 선택 | OpenAI 호환 엔드포인트 base URL입니다. LM Studio 기본값은 `http://localhost:1234/v1`입니다. |
+| `AIHUB_LLM_MODEL` | 선택 | 사용할 모델 id입니다. LM Studio는 로드한 모델명, OpenAI는 예: `gpt-4o-mini`, Anthropic 기본값은 `claude-opus-4-8`입니다. |
+| `AIHUB_LLM_API_KEY` | 선택 | openai/anthropic provider용 API 키입니다. LM Studio는 무시합니다. Anthropic은 `ANTHROPIC_API_KEY`도 사용할 수 있습니다. |
 
 ### 환경 변수 상세 설명
 
@@ -210,6 +214,40 @@ bash run.sh scan --all
 bash run.sh build-index
 ```
 
+### LLM 기반 앱/웹 아이디어 탐색
+
+수집한 메타데이터(제목/태그/파일 트리/용량)만 LLM에 보내 앱/웹 제품 아이디어를 발굴하고, 각 아이디어의 실현가능성을 판정/점수화합니다. 실제 데이터 내용은 LLM에 전달하지 않습니다.
+
+```bash
+# 로컬 LM Studio(기본), 또는 --provider openai / --provider anthropic
+bash run.sh ideate --datasetkey 593
+bash run.sh ideate --datasetkey 593 --provider anthropic --ideas 5
+bash run.sh ideate --datasetkey 593 --provider openai --model gpt-4o-mini
+
+# 여러 데이터셋의 아이디어를 비교/랭킹
+bash run.sh ideate-rank
+```
+
+LLM provider를 쓰려면 의존성을 한 번 설치해야 합니다.
+
+```bash
+uv sync --extra dev --extra llm
+```
+
+provider별 동작:
+
+- `lmstudio` (기본): LM Studio의 OpenAI 호환 서버(`http://localhost:1234/v1`)를 사용합니다. LM Studio에서 모델을 로드해 두면 됩니다.
+- `openai` / `codex`: 호스티드 OpenAI API를 사용합니다. `AIHUB_LLM_API_KEY`와 `AIHUB_LLM_MODEL`(예: `gpt-4o-mini`)이 필요합니다.
+- `anthropic` / `claude`: 공식 Anthropic SDK를 사용합니다. 기본 모델은 `claude-opus-4-8`이며 `ANTHROPIC_API_KEY`(또는 `AIHUB_LLM_API_KEY`)가 필요합니다.
+
+산출물:
+
+- `data/normalized/ideation/<datasetkey>.json`: 아이디어 목록과 판정/점수(로컬 전용)
+- `data/generated/ideation/<datasetkey>-<slug>.md`: 사람이 읽는 아이디어 브리프
+- `data/normalized/idea-ranking.json`, `data/generated/index/idea-ranking.md`: 데이터셋 간 랭킹/비교
+
+`ideate`는 기존 heuristic 분석을 대체하지 않고 별도 레이어로 보강합니다. 점수와 판정은 모두 메타데이터 기반 추정이며, 라이선스·라벨 품질·정책 적합성은 별도 검토가 필요합니다.
+
 ## 전체 데이터셋을 전부 탐색하려면
 
 가장 간단한 방법은 아래 순서입니다.
@@ -248,10 +286,14 @@ data/
 │  ├─ list/latest.json
 │  ├─ datasets/<datasetkey>.json
 │  ├─ scans/<timestamp>.json
+│  ├─ ideation/<datasetkey>.json
+│  ├─ idea-ranking.json
 │  └─ catalog.json
 └─ generated/
    ├─ datasets/<datasetkey>-<slug>.md
+   ├─ ideation/<datasetkey>-<slug>.md
    └─ index/dataset-catalog.md
+   └─ index/idea-ranking.md
 ```
 
 ### 각 폴더에 무엇이 쌓이는가
@@ -319,9 +361,10 @@ uv run pytest
 ## 구조 요약
 
 - `shell/`: 공식 `aihubshell` 설치, 실행, 파싱
-- `pipeline/`: list, inspect, summarize, catalog build
+- `pipeline/`: list, inspect, summarize, catalog build, ideate, idea ranking
 - `storage/`: raw cache, JSON, Markdown 저장
 - `scoring/`: heuristic 기반 분석
+- `llm/`: LLM provider 추상화 (LM Studio/OpenAI 호환, Anthropic)와 ideation 프롬프트
 - `cli.py`: Typer CLI 진입점
 
 아키텍처는 단순성을 우선합니다. 외부 셸 경계 하나, 파서 경계 하나, 정규화된 출력 포맷 하나, 보고서 계층 하나로 유지합니다.

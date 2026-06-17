@@ -1,0 +1,43 @@
+# {{ result.title }} — 앱/웹 아이디어 판정
+
+## 메타데이터
+- Dataset Key: `{{ result.dataset_key }}`
+- LLM Provider: `{{ result.provider }}`
+- Model: `{{ result.model }}`
+- Generated At: `{{ result.generated_at.isoformat() }}`
+- 아이디어 수: `{{ result.idea_count }}` (go 판정: `{{ result.go_idea_count }}`)
+- 대표 점수(best idea combined): `{{ "%.2f"|format(result.ranking_score) }}` / 10
+
+> 모든 판정은 메타데이터(제목, 태그, 파일 트리, 용량)만으로 추론한 결과입니다.
+> 실제 데이터 내용, 라이선스, 라벨 품질은 별도 검증이 필요합니다.
+
+## 종합 판정
+{{ result.overall_verdict or "판정 코멘트가 제공되지 않았습니다." }}
+
+## 제품 아이디어 (실현가능성 순)
+{% for idea in result.ranked_ideas() %}
+### {{ loop.index }}. {{ idea.name }} — `{{ idea.feasibility }}`
+- 한 줄 소개: {{ idea.one_liner }}
+- 형태: `{{ idea.app_or_web }}`
+- 점수: 기회 `{{ idea.opportunity_score }}`/10 · 실현 `{{ idea.feasibility_score }}`/10 · 데이터 적합 `{{ idea.data_fit_score }}`/10 (combined `{{ "%.2f"|format(idea.combined_score) }}`)
+- 타겟 사용자:
+{% for user in idea.target_users %}
+  - {{ user }}
+{% endfor %}
+- 핵심 기능:
+{% for feature in idea.core_features %}
+  - {{ feature }}
+{% endfor %}
+- 이 데이터가 필요한 이유: {{ idea.data_usage }}
+- 리스크:
+{% for risk in idea.risks %}
+  - {{ risk }}
+{% endfor %}
+
+{% endfor %}
+{% if result.notes %}
+## 비고
+{% for note in result.notes %}
+- {{ note }}
+{% endfor %}
+{% endif %}

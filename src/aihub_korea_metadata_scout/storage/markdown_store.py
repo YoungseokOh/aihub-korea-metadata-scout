@@ -3,11 +3,16 @@ from __future__ import annotations
 from pathlib import Path
 
 from aihub_korea_metadata_scout.config import ScoutSettings
-from aihub_korea_metadata_scout.models import DatasetSummary
+from aihub_korea_metadata_scout.models import DatasetSummary, IdeationResult, slugify_title
 
 
 def dataset_markdown_path(settings: ScoutSettings, summary: DatasetSummary) -> Path:
     return settings.generated_dataset_dir / f"{summary.dataset_key}-{summary.slug}.md"
+
+
+def ideation_markdown_path(settings: ScoutSettings, result: IdeationResult) -> Path:
+    slug = slugify_title(result.title)
+    return settings.generated_ideation_dir / f"{result.dataset_key}-{slug}.md"
 
 
 def catalog_markdown_path(settings: ScoutSettings) -> Path:
